@@ -10,6 +10,8 @@ from src.config import settings
 from src.models import User, School, Class, UserSetting
 from src.schemas import UserCreate, UserLogin
 
+from typing import Dict, Any
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
@@ -18,8 +20,12 @@ class AuthService:
     def get_password_hash(password: str) -> str:
         return pwd_context.hash(password)
 
+
+
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
     @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
+    def verify_password(plain_password, hashed_password):
         return pwd_context.verify(plain_password, hashed_password)
 
     @staticmethod
@@ -32,13 +38,18 @@ class AuthService:
         """Dispatched asynchronously via BackgroundTasks to eliminate web-route latency"""
         try:
             msg = MIMEText(
-                f"Hello {name},\n\nYour login to ExamForge-AI was successful! Welcome back to your dashboard.")
+                f"Hello {name},\n\nYour login to ExamForge-AI was successful! Welcome back to your dashboard."
+            )
             msg['Subject'] = f"🔄 Secure Login Alert - {settings.APP_NAME}"
-            msg['From'] = "security@examforge.ai"
+            msg['From'] = settings.SMTP_SENDER_EMAIL
             msg['To'] = email
 
-            # For local testing, prints to console. Plug in SMTP server details when ready:
-            print(f"[SMTP SEND] Outbound email dispatched successfully to: {email}")
+            with smtplib.SMTP("142.251.4.108", 587) as server:
+                server.starttls()  # This safely handles the SSL upgrade
+                server.login(settings.SMTP_SENDER_EMAIL, settings.SMTP_SENDER_PASSWORD)
+                server.sendmail(settings.SMTP_SENDER_EMAIL, email, msg.as_string())
+
+            print(f"[SMTP SEND] Real email dispatched successfully to: {email}")
         except Exception as e:
             print(f"[SMTP ERROR] Failed to deliver alert: {str(e)}")
 
@@ -71,33 +82,42 @@ class AuthService:
         return new_user
 
     @classmethod
-    def login_with_password(cls, payload: UserLogin, background_tasks: BackgroundTasks, db: Session) -> str:
+    def login_with_password(cls, payload: UserLogin, background_tasks: BackgroundTasks, db: Session):
         user = db.query(User).filter(User.email == payload.email).first()
-        if not user or not cls.verify_password(payload.password, user.password_hash):
-            raise HTTPException(status_code=401, detail="Invalid system credentials")
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        if not cls.verify_password(payload.password, user.password_hash):
+            raise HTTPException(status_code=401, detail="Invalid password")
 
         background_tasks.add_task(cls.send_welcome_email, user.email, user.name)
-        return cls.create_access_token({"user_id": str(user.id), "school_id": str(user.school_id)})
+
+        # Fetch School name for the profile widget UI binding
+        school = db.query(School).filter(School.id == user.school_id).first()
+
+        return {
+            "access_token": cls.create_access_token({"user_id": str(user.id), "school_id": str(user.school_id)}),
+            "token_type": "bearer",
+            "user_id": str(user.id),
+            "school_id": str(user.school_id),
+            "school_name": school.name if school else "Unknown Institution",
+            "user_name": user.name,
+            "email": user.email
+        }
 
     @classmethod
-    def login_with_google(cls, token: str, background_tasks: BackgroundTasks, db: Session) -> str:
+    def login_with_google(cls, token: str, background_tasks: BackgroundTasks, db: Session):
         try:
-            # 🌟 FIXED: Added complete token verification logic so email and name are properly defined
-            id_info = google_id_token.verify_oauth2_token(
-                token,
-                google_requests.Request(),
-                "GOOGLE_CLIENT_ID"  # Replace with your real Google Client ID in production
-            )
+            id_info = google_id_token.verify_oauth2_token(token, google_requests.Request(), settings.GOOGLE_CLIENT_ID)
             email = id_info["email"]
             name = id_info["name"]
         except Exception:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Google authentication failed")
+            raise HTTPException(status_code=401, detail="Google authentication failed")
 
         user = db.query(User).filter(User.email == email).first()
         if not user:
             default_school = db.query(School).first()
             if not default_school:
-                default_school = School(name="Default Google School")
+                default_school = School(name="Bokaro Steel City School")  # Your local instance base
                 db.add(default_school)
                 db.flush()
 
@@ -113,7 +133,18 @@ class AuthService:
             db.commit()
 
         background_tasks.add_task(cls.send_welcome_email, user.email, user.name)
-        return cls.create_access_token({"user_id": str(user.id), "school_id": str(user.school_id)})
+
+        school = db.query(School).filter(School.id == user.school_id).first()
+
+        return {
+            "access_token": cls.create_access_token({"user_id": str(user.id), "school_id": str(user.school_id)}),
+            "token_type": "bearer",
+            "user_id": str(user.id),
+            "school_id": str(user.school_id),
+            "school_name": school.name if school else "Unknown Institution",
+            "user_name": user.name,
+            "email": user.email
+        }
 
     @staticmethod
     def update_profile(user_id: str, name: str, theme: str, db: Session):

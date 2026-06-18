@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamForgeAI - Create Account</title>
+    <!-- Tailwind CSS for clean layout structure -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Premium Professional Background Mesh Gradient */
+        .bg-mesh {
+            background: radial-gradient(at 0% 0%, #E0F2FE 0px, transparent 50%), 
+                        radial-gradient(at 100% 100%, #FFEDD5 0px, transparent 50%), 
+                        #F8F9FA;
+            background-attachment: fixed;
+        }
+
+        /* Enhanced Stacked Background Container Card styling */
+        .premium-card-ui {
+            background: linear-gradient(135deg, rgba(224, 242, 254, 0.6) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 237, 213, 0.6) 100%);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.02) !important;
+            backdrop-filter: blur(12px);
+        }
+
+        /* Input Fields Overrides with Premium Focus States */
+        .custom-input {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #E5E7EB;
+            border-radius: 11px;
+            padding: 10px 14px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-input:focus {
+            border-color: #111111;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.06);
+            outline: none;
+        }
+
+        /* Form labels matching original typography specs */
+        .custom-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #4B5563;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-mesh min-h-screen flex items-center justify-center p-4">
+
+    <!-- Central Registration Card Architecture -->
+    <main class="premium-card-ui w-full max-w-[520px] rounded-[24px] p-8 md:p-12 my-6">
+        
+        <!-- Brand Header UI Section -->
+        <header class="text-center mb-10">
+            <div class="inline-block bg-[#111111] text-white font-extrabold px-3.5 py-1.5 rounded-xl text-lg mr-1.5 align-middle select-none">EF</div>
+            <h1 class="inline-block text-2xl font-extrabold text-[#111111] tracking-tight align-middle">
+                ExamForge<span class="text-[#6B7280] font-normal">AI</span>
+            </h1>
+            <p class="text-sm text-[#6B7280] mt-2.5">Create your centralized teacher dashboard account</p>
+        </header>
+
+        <!-- Profile Onboarding Registration Form Section -->
+        <form onsubmit="event.preventDefault();" class="flex flex-col gap-5">
+            
+            <!-- Full Name Input Field Block -->
+            <div>
+                <label for="fullname" class="custom-label">Full Name</label>
+                <input type="text" id="fullname" placeholder="e.g. Professor John Doe" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- School Email Input Field Block -->
+            <div>
+                <label for="email" class="custom-label">School Email Address</label>
+                <input type="email" id="email" placeholder="name@institution.edu" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- Password Account Field Block -->
+            <div>
+                <label for="password" class="custom-label">Password</label>
+                <input type="password" id="password" placeholder="Create secure password" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- Institution Association Mapping Input Field Block -->
+            <div>
+                <label for="school" class="custom-label">School Mapping</label>
+                <input type="text" id="school" placeholder="e.g. Delhi Public School, Bokaro Steel City" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- Submission Trigger Call To Action Button (Sign Up) -->
+           <button
+    type="button"
+    onclick="signup()"
+    class="w-full bg-[#111111] hover:bg-black text-white py-3.5 px-6 rounded-xl font-semibold text-sm tracking-wide shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer mt-2"
+>
+    Create Teacher Account
+</button>
+        </form>
+
+        <!-- Redirection Navigation Links Footer -->
+        <footer class="text-center text-sm text-[#6B7280] mt-8 pt-6 border-t border-[#E5E7EB]">
+            Already have an active account? 
+            <a href="login.html" class="text-black font-bold hover:underline">
+        Sign in
+    </a>
+        </footer>
+
+    </main>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+
+
+
+</body>
+</html>

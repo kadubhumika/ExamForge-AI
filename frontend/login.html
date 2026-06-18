@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamForgeAI - Login</title>
+    <!-- Tailwind CSS for modern layout building -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Premium Professional Background Mesh Gradient */
+        .bg-mesh {
+            background: radial-gradient(at 0% 0%, #E0F2FE 0px, transparent 50%), 
+                        radial-gradient(at 100% 100%, #FFEDD5 0px, transparent 50%), 
+                        #F8F9FA;
+            background-attachment: fixed;
+        }
+
+        /* Enhanced Stacked Background Container Card styling */
+        .premium-card-ui {
+            background: linear-gradient(135deg, rgba(224, 242, 254, 0.6) 0%, rgba(255, 255, 255, 0.95) 50%, rgba(255, 237, 213, 0.6) 100%);
+            border: 1px solid rgba(229, 231, 235, 0.8);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.03), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            backdrop-filter: blur(12px);
+        }
+
+        /* Input Fields Overrides with Premium Focus States */
+        .custom-input {
+            background-color: rgba(255, 255, 255, 0.85);
+            border: 2px solid #E5E7EB;
+            border-radius: 11px;
+            padding: 10px 14px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .custom-input:focus {
+            border-color: #111111;
+            background-color: #FFFFFF;
+            box-shadow: 0 0 0 4px rgba(17, 17, 17, 0.06);
+            outline: none;
+        }
+
+        /* Form labels matching original typography specs */
+        .custom-label {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #4B5563;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-mesh min-h-screen flex items-center justify-center p-4">
+
+    <!-- Central Card Architecture -->
+    <main class="premium-card-ui w-full max-w-[480px] rounded-[24px] p-8 md:p-10">
+        
+        <!-- Brand Header UI Section -->
+        <header class="text-center mb-8">
+            <div class="inline-block bg-[#111111] text-white font-extrabold px-3.5 py-1.5 rounded-xl text-DF-logo text-lg mr-1.5 align-middle select-none">EF</div>
+            <h1 class="inline-block text-2xl font-extrabold text-[#111111] tracking-tight align-middle">
+                ExamForge<span class="text-[#6B7280] font-normal">AI</span>
+            </h1>
+            <p class="text-sm text-[#6B7280] mt-2.5">Welcome back! Please access your console panel</p>
+        </header>
+
+        <!-- Credentials Submission Form Section -->
+        <form onsubmit="event.preventDefault();" class="flex flex-col gap-5">
+            
+            <!-- Email Address Field Block -->
+            <div>
+                <label for="email" class="custom-label">Email Address</label>
+                <input type="email" id="email" placeholder="teacher@institution.edu" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- Password Field Block -->
+            <div>
+                <label for="password" class="custom-label">Password</label>
+                <input type="password" id="password" placeholder="••••••••" class="w-full custom-input text-sm placeholder-gray-400 text-[#111111]" required />
+            </div>
+
+            <!-- Inline Utility Elements (Keep Active / Forgot Link) -->
+            <div class="flex items-center justify-between mt-1 mb-2">
+                <label class="flex items-center gap-2 text-sm text-[#4B5563] cursor-pointer select-none">
+                    <input type="checkbox" class="w-4 h-4 rounded border-gray-300 text-black focus:ring-black accent-black" />
+                    <span>Keep active 30 days</span>
+                </label>
+                <a href="#" class="text-sm font-semibold text-[#4B5563] hover:text-black transition-colors">Forgot password?</a>
+            </div>
+
+            <!-- Primary Action Call to Action Button (Sign In) -->
+            <button type="submit"  onclick="login()" class="w-full bg-[#111111] hover:bg-black text-white py-3 px-6 rounded-xl font-semibold text-sm tracking-wide shadow-md hover:shadow-lg transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer">
+                Sign In Securely
+            </button>
+        </form>
+
+        <div class="text-center mt-6 text-sm text-gray-600">
+    Don’t have an account?
+    <a href="signup.html" class="text-black font-bold hover:underline">
+        Sign up
+    </a>
+</div>
+
+        <!-- Dynamic UI Breakup Divider Component -->
+        <div class="flex items-center my-6">
+            <div class="flex-grow border-t border-[#E5E7EB]"></div>
+            <span class="px-3.5 text-[#6B7280] text-[10px] font-bold tracking-widest uppercase select-none">or Identity Sync</span>
+            <div class="flex-grow border-t border-[#E5E7EB]"></div>
+        </div>
+
+        <!-- Identity Provider Authorization Single Sign-On Channel -->
+        <button class="w-full bg-white/90 hover:bg-white text-[#374151] font-semibold text-sm py-3 px-6 rounded-xl border border-[#D1D5DB] shadow-xs hover:border-[#9CA3AF] transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 cursor-pointer">
+            <span class="text-base">🌐</span> Continue with Google Workspace
+        </button>
+        <div id="googleBtn"></div>
+
+<script>
+window.onload = () => {
+    google.accounts.id.initialize({
+        client_id: "475840141968-l33s9qfa0in5lcsqhu5i277c5nhob4ak.apps.googleusercontent.com",
+        callback: handleGoogleLogin
+    });
+
+    google.accounts.id.renderButton(
+        document.getElementById("googleBtn"),
+        { theme: "outline", size: "large" }
+    );
+};
+</script>
+
+        <!-- Footer Redirection Links -->
+        <footer class="text-center text-sm text-[#6B7280] mt-8 pt-6 border-t border-[#E5E7EB]">
+            New to this instance? 
+            <a href="#" class="text-[#111111] font-bold border-b border-[#111111] pb-0.5 hover:text-gray-700 hover:border-gray-700 transition-colors">Request access code</a>
+        </footer>
+
+    </main>
+    <script src="api.js"></script>
+    <script src="auth.js"></script>
+    <script src="google.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+</body>
+</html>

@@ -12,24 +12,17 @@ def register_teacher(payload: UserCreate, db: Session = Depends(get_db)):
     user = AuthService.register_teacher(payload, db)
     return {"message": "Teacher profile registered successfully", "user_id": str(user.id)}
 
-@router.post("/login", response_model=Token)
+@router.post("/login")
 def login_teacher(payload: UserLogin, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    token = AuthService.login_with_password(payload, background_tasks, db)
-    return {"access_token": token, "token_type": "bearer"}
-
+    return AuthService.login_with_password(payload, background_tasks, db)
 from pydantic import BaseModel
 
 class GoogleLoginRequest(BaseModel):
     id_token: str
 
-@router.post("/google", response_model=Token)
-def login_google(
-    payload: GoogleLoginRequest,
-    background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db)
-):
-    token = AuthService.login_with_google(payload.id_token, background_tasks, db)
-    return {"access_token": token, "token_type": "bearer"}
+@router.post("/google")
+def login_google(payload: GoogleLoginRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    return AuthService.login_with_google(payload.id_token, background_tasks, db)
 
 
 @router.put("/profile/update", status_code=status.HTTP_200_OK)

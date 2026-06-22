@@ -1,28 +1,22 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status, BackgroundTasks
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any, Optional
 from uuid import UUID
 from datetime import datetime
+import os
 
 from src.database import get_db
-from src.routes.auth import router as auth_router
-from src.schemas import PaperTemplateCreate, PaperTemplateResponse, AssignmentCreate, AssignmentResponse
+from src.schemas import (
+    PaperTemplateCreate, PaperTemplateResponse,
+    AssignmentCreate, AssignmentResponse, AssignmentStatusResponse,
+)
 from src.services.assignment_service import AssignmentService
 from src.services.pdf_service import PDFService
 from src.services.cache_service import CacheService
-from src.models import Assignment, MyLibrary
-
-
-from fastapi import WebSocket, WebSocketDisconnect
-from src.services.websocket_manager import ws_manager
-
-# WebSocket endpoint that your Streamlit UI connects to
-def get_current_user(token: str = "bearer mock-token") -> Dict[str, Any]:
-    if not token:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing authorization credentials")
-    return {"user_id": "authenticated-teacher-uuid", "school_id": "7ec92b3a-f10a-42c2-b9e4-5ab12de349bb"}
-
-
+from src.services.notification_service import NotificationService
+from src.services.auth_service import get_current_user
+from src.models import Assignment, MyLibrary, User, AssignmentResult
 
 router = APIRouter(prefix="/assignments", tags=["Assignments Management"])
 
@@ -32,40 +26,39 @@ router = APIRouter(prefix="/assignments", tags=["Assignments Management"])
 def create_structural_template(
         payload: PaperTemplateCreate,
         db: Session = Depends(get_db),
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
     try:
         template = AssignmentService.add_template(payload, db)
         return template
     except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Database execution crash: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Could not create template: {str(e)}")
 
 
 # --- 2. UPLOAD & ASSIGNMENT FLOW ---
 @router.post("/upload-and-create", response_model=AssignmentResponse, status_code=status.HTTP_202_ACCEPTED)
 def upload_pdf_and_create_assignment(
-
+        background_tasks: BackgroundTasks,
         title: str = Form(...),
-        teacher_id: UUID = Form(...),
-        class_id: UUID = Form(...),
+        class_id: Optional[UUID] = Form(None),
         due_date: str = Form(...),
         instructions: Optional[str] = Form(None),
         template_id: Optional[UUID] = Form(None),
+        structure_scheme: Optional[str] = Form(None),  # JSON string of [{type,count,marks_per}] when no saved template
         file: UploadFile = File(...),
         db: Session = Depends(get_db),
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
-    # 1. Handle file stream upload processing safely
     file_path = PDFService.upload_document(file)
 
     try:
         parsed_due_date = datetime.fromisoformat(due_date)
     except ValueError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                            detail="Invalid ISO due_date syntax layout string.")
+                            detail="Invalid ISO due_date format (expected YYYY-MM-DD or full ISO datetime)")
 
     payload = AssignmentCreate(
-        teacher_id=teacher_id,
+        teacher_id=current_user.id,
         class_id=class_id,
         template_id=template_id,
         title=title,
@@ -77,100 +70,180 @@ def upload_pdf_and_create_assignment(
     try:
         assignment = AssignmentService.create_assignment_job(payload, file_path, db)
 
+        # If the teacher built a one-off question structure on the create-assignment
+        # screen (instead of picking a saved template), cache it under the assignment id
+        # so the background pipeline can find it without needing a PaperTemplate row.
+        if not template_id and structure_scheme:
+            import json
+            try:
+                scheme = json.loads(structure_scheme)
+                CacheService.cache_prompt_template(f"assignment:{assignment.id}", scheme)
+            except (json.JSONDecodeError, TypeError):
+                pass
 
         CacheService.index_assignment_for_search(
-            school_id=str(current_user["school_id"]),
+            school_id=str(current_user.school_id),
             assignment_id=str(assignment.id),
             title=title,
-            topic="Document Chapter Analysis"
+            topic=title,
         )
 
+        background_tasks.add_task(AssignmentService.run_generation_pipeline, str(assignment.id))
 
         return AssignmentResponse.model_validate(assignment)
 
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                            detail=f"Pipeline initiation aborted: {str(e)}")
+                            detail=f"Could not start assignment generation: {str(e)}")
 
 
-# --- 3. SEARCH ENGINE ---
-@router.websocket("/ws/status/{channel_id}")
-async def websocket_status_endpoint(websocket: WebSocket, channel_id: str):
-    await ws_manager.connect(channel_id, websocket)
-    try:
-        while True:
-            # Keeps connection line persistent and active
-            await websocket.receive_text()
-    except WebSocketDisconnect:
-        ws_manager.disconnect(channel_id, websocket)
+# --- 3. STATUS POLLING (replaces WebSocket — frontend polls this every ~2s) ---
+@router.get("/{assignment_id}/status", response_model=AssignmentStatusResponse)
+def get_assignment_status(
+        assignment_id: UUID,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
+    if not assignment:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assignment not found")
 
-# Internal router point used by Celery workers to pass message text payloads
-@router.post("/ws-notify", include_in_schema=False)
-async def accept_worker_notification_broadcast(payload: dict):
-    await ws_manager.send_status_update(
-        client_id=payload["channel_id"],
-        message={"status": payload["status"], "progress": payload["progress"]}
+    result = db.query(AssignmentResult).filter(AssignmentResult.assignment_id == assignment_id).first()
+
+    return AssignmentStatusResponse(
+        id=assignment.id,
+        status=assignment.status,
+        error_message=assignment.error_message,
+        pdf_url=f"/api/v1/assignments/{assignment.id}/download" if result else None,
     )
-    return {"status": "ok"}
 
 
+# --- 4. RESULT (structured JSON, for rendering the live HTML preview) ---
+@router.get("/{assignment_id}/result")
+def get_assignment_result(
+        assignment_id: UUID,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    result = db.query(AssignmentResult).filter(AssignmentResult.assignment_id == assignment_id).first()
+    if not result:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Result not ready yet")
+
+    assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
+
+    return {
+        "assignment_id": str(assignment_id),
+        "title": assignment.title if assignment else "",
+        "structured_json": result.structured_json,
+    }
+
+
+# --- 5. DOWNLOAD PDF ---
+@router.get("/{assignment_id}/download")
+def download_assignment_pdf(
+        assignment_id: UUID,
+        db: Session = Depends(get_db),
+        current_user: User = Depends(get_current_user)
+):
+    pdf_path = AssignmentService.download_assignment_pdf(str(assignment_id), db)
+    if not os.path.exists(pdf_path):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Generated file missing from storage")
+
+    assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
+    safe_title = (assignment.title if assignment else "assignment").replace(" ", "_")
+
+    return FileResponse(
+        path=pdf_path,
+        filename=f"{safe_title}.pdf",
+        media_type="application/pdf",
+    )
+
+
+# --- 6. SEARCH ---
 @router.get("/search", response_model=List[Dict[str, Any]])
 def fast_search_assignments(
         school_id: UUID,
         query: str,
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
     return CacheService.search_assignments(str(school_id), query)
 
 
-# --- 4. DASHBOARD GRID VIEW CARDS ---
+# --- 7. DASHBOARD GRID VIEW CARDS ---
 @router.get("/dashboard/{teacher_id}", response_model=List[AssignmentResponse])
 def get_teacher_dashboard_cards(
         teacher_id: UUID,
         db: Session = Depends(get_db),
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
-    # Fetch active cards excluding soft deleted statuses
     cards = db.query(Assignment).filter(
         Assignment.teacher_id == teacher_id,
         Assignment.status != "DELETED"
     ).order_by(Assignment.created_at.desc()).all()
 
-    return [AssignmentResponse.model_validate(c) for c in cards]  # 🌟 FIX BUG 1: Consistent serialization arrays
+    return [AssignmentResponse.model_validate(c) for c in cards]
 
 
+# --- 8. DELETE ---
 @router.delete("/{assignment_id}", status_code=status.HTTP_200_OK)
 def delete_assignment(
         assignment_id: UUID,
         db: Session = Depends(get_db),
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
     assignment = db.query(Assignment).filter(Assignment.id == assignment_id).first()
     if not assignment:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Target node reference mapping unavailable")
-
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Assignment not found")
 
     assignment.status = "DELETED"
-
-    CacheService.remove_from_search(school_id=str(current_user["school_id"]), assignment_id=str(assignment_id))
     db.commit()
-    return {"status": "success", "message": "Assignment soft-deleted successfully"}
+
+    CacheService.remove_from_search(school_id=str(current_user.school_id), assignment_id=str(assignment_id))
+    NotificationService.assignment_deleted(db, current_user.id, assignment.id, assignment.title)
+
+    return {"status": "success", "message": "Assignment deleted successfully"}
 
 
-# --- 5. MY LIBRARY STATUS TRACKING ---
+# --- 9. MY LIBRARY STATUS TRACKING ---
 @router.get("/my-library/{user_id}")
 def view_my_library(
         user_id: UUID,
         db: Session = Depends(get_db),
-        current_user: Dict[str, Any] = Depends(get_current_user)
+        current_user: User = Depends(get_current_user)
 ):
-    completed = db.query(MyLibrary).filter(MyLibrary.user_id == user_id, MyLibrary.is_completed == True).all()
-    pending = db.query(MyLibrary).filter(MyLibrary.user_id == user_id, MyLibrary.is_completed == False).all()
+    items = (
+        db.query(MyLibrary, Assignment)
+        .join(Assignment, MyLibrary.assignment_id == Assignment.id)
+        .filter(MyLibrary.user_id == user_id, Assignment.status != "DELETED")
+        .order_by(Assignment.created_at.desc())
+        .all()
+    )
 
+    library_items = []
+    completed_count = 0
+    pending_count = 0
+
+    for lib, assignment in items:
+        is_done = assignment.status == "DONE"
+        if is_done:
+            completed_count += 1
+        else:
+            pending_count += 1
+
+        library_items.append({
+            "assignment_id": str(assignment.id),
+            "title": assignment.title,
+            "status": assignment.status,
+            "is_completed": is_done,
+            "created_at": assignment.created_at.isoformat(),
+            "due_date": assignment.due_date.isoformat() if assignment.due_date else None,
+        })
 
     return {
-        "completed_count": len(completed),
-        "pending_count": len(pending),
-        "completed_assignments": [str(item.assignment_id) for item in completed],
-        "pending_assignments": [str(item.assignment_id) for item in pending]
+        "total_count": len(library_items),
+        "completed_count": completed_count,
+        "pending_count": pending_count,
+        "items": library_items,
     }

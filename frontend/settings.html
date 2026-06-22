@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamForge AI - Settings</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 20px; }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-[#FFFBF7] via-[#FFF8F2] to-[#FFF3EA] h-screen max-h-screen overflow-hidden flex p-4 gap-4 box-border relative">
+
+    <aside class="w-[280px] max-h-full bg-white rounded-3xl border border-[#E5E7EB] p-4 flex flex-col gap-5 shrink-0 shadow-xs overflow-y-auto custom-scroll">
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2.5 px-1 py-1">
+                <div class="bg-[#1A1A1A] text-white rounded-lg w-8 h-8 flex items-center justify-center font-black text-xl">V</div>
+                <span class="font-bold text-xl text-[#1A1A1A] tracking-tight">ExamForge AI</span>
+            </div>
+            <a href="create_assignment.html" class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 cursor-pointer transition hover:opacity-95 shadow-xs">
+                ✨ AI Teacher's Toolkit
+            </a>
+            <nav class="flex flex-col gap-0.5">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>🏠</span> Home
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>👥</span> My Groups
+                </a>
+                <a href="assignment.html" class="flex items-center justify-between px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <div class="flex items-center gap-3"><span>📄</span> Assignments</div>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📱</span> AI Teacher's Toolkit
+                </a>
+                <a href="mylibrary.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📚</span> My Library
+                </a>
+            </nav>
+        </div>
+        <div class="flex flex-col gap-2 border-t border-gray-100 pt-3">
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-2 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                <span>⚙️</span> Settings
+            </a>
+            <div class="bg-[#F3F4F6] p-2.5 rounded-2xl flex items-center gap-3">
+                <div class="bg-white w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-xl shadow-xs shrink-0">🏫</div>
+                <div class="overflow-hidden">
+                    <h4 id="schoolName" class="text-[13px] font-bold text-[#1A1A1A] truncate"></h4>
+                    <p class="margin-0 text-[11px] text-[#828282] truncate">Bokaro Steel City</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl p-5 flex flex-col gap-5 overflow-y-auto custom-scroll pb-12 relative">
+
+        <header class="bg-white rounded-2xl px-6 py-2.5 flex justify-between items-center shadow-xs border border-[#F3F4F6] gap-4 shrink-0">
+            <div class="flex items-center gap-4 flex-1 max-w-md">
+                <span onclick="window.location.href='dashboard.html'" class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
+                <div class="flex items-center gap-2 text-sm text-[#555555] font-medium select-none">
+                    <span>⚙️</span><span>Settings</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-5 shrink-0">
+                <div class="relative cursor-pointer text-lg text-gray-600 hover:text-black transition">
+                    🔔 <span class="absolute top-0.5 right-0.5 h-2 w-2 bg-[#FF5A36] rounded-full border border-white"></span>
+                </div>
+                <div class="flex items-center gap-2 cursor-pointer group">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="" class="w-7 h-7 rounded-full object-cover border border-[#E5E7EB]"/>
+                    <span id="username" class="text-sm font-semibold text-[#1A1A1A] group-hover:text-gray-700"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex items-center gap-3 px-2 mt-1 shrink-0">
+            <span class="w-2.5 h-2.5 bg-gradient-to-r from-[#D05230] to-[#E76F51] rounded-full ring-4 ring-orange-100 animate-pulse"></span>
+            <div>
+                <h2 class="text-xl font-bold text-[#1A1A1A] tracking-tight">Account Configuration</h2>
+                <p class="text-xs text-[#828282]">Manage your profile settings, preferences, and workspace parameters.</p>
+            </div>
+        </div>
+
+        <div id="settingsBanner" class="hidden text-xs font-semibold px-4 py-2.5 rounded-xl"></div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-5 items-start">
+
+            <section class="bg-white border border-[#F3F4F6] p-6 rounded-3xl shadow-xs flex flex-col gap-5 lg:col-span-3">
+                <div class="border-b border-gray-100 pb-3 flex items-center gap-2">
+                    <span class="text-lg">👤</span>
+                    <h3 class="text-base font-bold text-[#1A1A1A] tracking-tight">Profile Settings</h3>
+                </div>
+
+                <form onsubmit="event.preventDefault();" class="flex flex-col gap-4">
+                    <div class="flex flex-col gap-1.5">
+                        <label for="fullName" class="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Full Name</label>
+                        <input type="text" id="fullName" class="w-full bg-[#F9FAFB] border border-[#E5E7EB] text-sm text-[#1A1A1A] px-4 py-2.5 rounded-xl focus:outline-none focus:bg-white focus:border-[#1A1A1A] transition" />
+                    </div>
+
+                    <div class="flex flex-col gap-1.5 relative">
+                        <label class="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Email (Read Only)</label>
+                        <div class="relative flex items-center">
+                            <input type="email" id="email" readonly class="w-full bg-[#F3F4F6] border border-[#E5E7EB] text-sm text-[#6B7280] pl-4 pr-10 py-2.5 rounded-xl cursor-not-allowed select-none outline-none" />
+                            <span class="absolute right-4 text-xs grayscale opacity-60">🔒</span>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-1.5 relative">
+                        <label class="text-xs font-bold text-[#4B5563] uppercase tracking-wider">School (Read Only)</label>
+                        <div class="relative flex items-center">
+                            <input type="text" id="school" readonly class="w-full bg-[#F3F4F6] border border-[#E5E7EB] text-sm text-[#6B7280] pl-4 pr-10 py-2.5 rounded-xl cursor-not-allowed select-none outline-none" />
+                            <span class="absolute right-4 text-xs grayscale opacity-60">🔒</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-2">
+                        <button type="button" onclick="updateProfile()" class="bg-[#111111] hover:bg-black text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer active:scale-98">
+                            Update Profile
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="bg-white border border-[#F3F4F6] p-6 rounded-3xl shadow-xs flex flex-col gap-5 lg:col-span-2">
+                <div class="border-b border-gray-100 pb-3 flex items-center gap-2">
+                    <span class="text-lg">🎨</span>
+                    <h3 class="text-base font-bold text-[#1A1A1A] tracking-tight">Appearance</h3>
+                </div>
+
+                <div class="flex flex-col gap-5">
+                    <div class="flex flex-col gap-3">
+                        <p class="text-xs font-bold text-[#4B5563] uppercase tracking-wider">Theme Mode</p>
+
+                        <label class="flex items-center gap-3 p-3 border border-[#E5E7EB] bg-[#F9FAFB] rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="themeSelection" value="light" checked class="w-4 h-4 accent-[#1A1A1A] cursor-pointer" />
+                            <div class="flex flex-col">
+                                <span class="text-sm font-semibold text-[#1A1A1A]">● Light Mode</span>
+                                <span class="text-[11px] text-[#828282]">Clean, high-contrast crisp theme workspace.</span>
+                            </div>
+                        </label>
+
+                        <label class="flex items-center gap-3 p-3 border border-[#E5E7EB] rounded-xl cursor-pointer hover:bg-gray-50 transition">
+                            <input type="radio" name="themeSelection" value="dark" class="w-4 h-4 accent-[#1A1A1A] cursor-pointer" />
+                            <div class="flex flex-col">
+                                <span class="text-sm font-semibold text-[#4B5563]">( ) Dark Mode</span>
+                                <span class="text-[11px] text-[#828282]">Soft midnight colors easy on ambient lighting eyes.</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="pt-1.5 border-t border-gray-50">
+                        <button type="button" onclick="updateProfile()" class="bg-[#111111] hover:bg-black text-white text-xs font-semibold px-5 py-2.5 rounded-xl transition shadow-xs cursor-pointer active:scale-98 w-full text-center">
+                            Save Theme
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+    <script src="api.js"></script>
+    <script src="notifications.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

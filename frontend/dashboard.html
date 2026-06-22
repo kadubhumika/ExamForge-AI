@@ -4,13 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VedaAI Dashboard</title>
-    <!-- Tailwind CSS for layout structure -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
             font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
         }
-        /* Custom scrollbar handling for the viewport content container */
         .custom-scroll::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -23,54 +21,47 @@
             border-radius: 20px;
         }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<!-- Soft orange-tinted background gradient over the whole viewport framework -->
 <body class="bg-gradient-to-br from-[#FFFBF7] via-[#FFF8F2] to-[#FFF3EA] h-screen max-h-screen overflow-hidden flex p-4 gap-4 box-border">
 
-    <!-- 1. LEFT SIDEBAR -->
     <aside class="w-[280px] bg-white rounded-3xl border border-[#E5E7EB] p-5 flex flex-col justify-between shrink-0 shadow-xs">
         <div class="flex flex-col gap-6">
-            <!-- Logo Section -->
             <div class="flex items-center gap-2.5">
                 <div class="bg-[#1A1A1A] text-white rounded-lg w-8 h-8 flex items-center justify-center font-black text-xl">V</div>
                 <span class="font-bold text-xl text-[#1A1A1A] tracking-tight">ExamForge AI</span>
             </div>
 
-            <!-- Gradient Action Button -->
-            <button class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2.5 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 cursor-pointer transition hover:opacity-95 shadow-xs">
+            <a href="create_assignment.html" class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2.5 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 cursor-pointer transition hover:opacity-95 shadow-xs">
                 ✨ AI Teacher's Toolkit
-            </button>
+            </a>
 
-            <!-- Navigation Links -->
             <nav class="flex flex-col gap-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2.5 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
                     <span>🏠</span> Home
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>👥</span> My Groups
                 </a>
-                <a href="#" class="flex items-center justify-between px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                <a href="assignment.html" class="flex items-center justify-between px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <div class="flex items-center gap-3">
                         <span>📄</span> Assignments
                     </div>
-                    <span class="bg-[#FF5A36] text-white text-[10px] font-bold px-2 py-0.5 rounded-full">32</span>
                 </a>
                 <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>📱</span> AI Teacher's Toolkit
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                <a href="mylibrary.html" class="flex items-center gap-3 px-4 py-2.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>📚</span> My Library
                 </a>
             </nav>
         </div>
 
-        <!-- Lower Metadata Profile Footer (Minimized spatial gap) -->
         <div class="flex flex-col gap-2">
-            <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                 <span>⚙️</span> Settings
             </a>
 
-            <!-- School Context Panel directly adjacent under settings spacing block -->
             <div class="bg-[#F3F4F6] p-3 rounded-2xl flex items-center gap-3">
                 <div class="bg-white w-10 h-10 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-xl shadow-xs shrink-0">🏫</div>
                 <div class="overflow-hidden">
@@ -81,80 +72,63 @@
         </div>
     </aside>
 
-    <!-- 2. MAIN WORKSPACE CANVAS CONTAINER (With Scrolling Capability Enabled) -->
     <main class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl p-5 flex flex-col gap-4 overflow-y-auto custom-scroll">
 
-        <!-- Top Navigation Navbar Header with Responsive Search Bar -->
         <header class="bg-white rounded-2xl px-6 py-2.5 flex justify-between items-center shadow-xs border border-[#F3F4F6] gap-4 shrink-0">
             <div class="flex items-center gap-4 flex-1 max-w-md">
                 <span class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
-                <!-- Integrated Modular Search Field Interface element -->
                 <div class="relative w-full flex items-center">
                     <span class="absolute left-3.5 text-gray-400 text-sm pointer-events-none">🔍</span>
-                    <input type="text" placeholder="Search assignments, groups, or resources..." class="w-full bg-[#F3F4F6] text-sm text-[#1A1A1A] pl-10 pr-4 py-2 rounded-xl border border-transparent focus:outline-none focus:bg-white focus:border-[#E5E7EB] transition placeholder-gray-400" />
+                    <input id="searchInput" type="text" placeholder="Search assignments, groups, or resources..." class="w-full bg-[#F3F4F6] text-sm text-[#1A1A1A] pl-10 pr-4 py-2 rounded-xl border border-transparent focus:outline-none focus:bg-white focus:border-[#E5E7EB] transition placeholder-gray-400" />
                 </div>
             </div>
 
             <div class="flex items-center gap-5 shrink-0">
-                <!-- Notifications Bell -->
                 <div class="relative cursor-pointer text-lg text-gray-600 hover:text-black transition">
                     🔔 <span class="absolute top-0.5 right-0.5 h-2 w-2 bg-[#FF5A36] rounded-full border border-white"></span>
                 </div>
-                <!-- User Profile Session Badge -->
                 <div class="flex items-center gap-2 cursor-pointer group">
                     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="John Doe" class="w-7 h-7 rounded-full object-cover border border-[#E5E7EB]"/>
                     <span id="username" class="text-sm font-semibold text-[#1A1A1A] group-hover:text-gray-700"></span>
-
                 </div>
             </div>
         </header>
 
-        <!-- Central Workspace Frame Card Frame -->
         <section class="bg-white rounded-3xl flex-1 flex flex-col items-center justify-center p-10 text-center shadow-xs border border-[#F3F4F6] min-h-[450px]">
 
-            <!-- Illustration State Composition Graphic -->
             <div class="relative w-[200px] h-[180px] mb-6 flex items-center justify-center">
                 <div class="absolute w-[140px] h-[140px] bg-[#F4F4F5] rounded-full opacity-80"></div>
-
-                <!-- Abstract Vector Line Art Decoration -->
                 <svg class="absolute w-[180px] h-[180px] opacity-40" viewBox="0 0 100 100" fill="none" stroke="#9CA3AF" stroke-width="1.2">
                     <path d="M15,45 Q35,15 55,45 T95,35" stroke-dasharray="3 3" />
                 </svg>
-
-                <!-- Floating Document Sheet Background Asset -->
                 <div class="absolute right-12 top-6 bg-white w-[70px] h-[95px] rounded-xl shadow-lg border border-[#F3F4F6] p-3 flex flex-col gap-2 transform rotate-[6deg] z-10">
                     <div class="w-6 h-1.5 bg-[#4B5563] rounded-sm"></div>
                     <div class="w-full h-1 bg-[#E5E7EB] rounded-sm"></div>
                     <div class="w-[90%] h-1 bg-[#E5E7EB] rounded-sm"></div>
                     <div class="w-[80%] h-1 bg-[#E5E7EB] rounded-sm"></div>
                 </div>
-
-                <!-- Loupe Focus Negative Evaluation Indicator Foreground -->
                 <div class="absolute left-8 bottom-6 z-20 w-[90px] h-[90px] border-4 border-[#D1D5DB] rounded-full bg-white/90 backdrop-blur-xs flex items-center justify-center shadow-xl transform -translate-x-2 -translate-y-2">
                     <span class="text-[#EF4444] text-4xl font-extrabold select-none">✕</span>
                 </div>
-                <!-- Loupe Diagonal Handle Support Pillar -->
                 <div class="absolute bottom-4 left-24 z-10 w-2.5 h-11 bg-[#D1D5DB] transform rotate-[-45deg] rounded-full shadow-xs"></div>
             </div>
 
-            <!-- Descriptive Text Hierarchy Messaging Panel -->
             <div class="max-w-[480px] mb-8">
                 <h2 class="text-2xl font-bold text-[#111827] mb-3 tracking-tight">No assignments yet</h2>
                 <p class="text-sm text-[#6B7280] leading-relaxed">
-                    Create your first assignment to start collecting and grading student submissions. 
-                    You can set up rubrics, define marking criteria, and let AI assist with grading.
+                    Create your first assignment to start generating AI-powered question papers.
+                    Upload a chapter, set your question structure, and let AI do the rest.
                 </p>
             </div>
 
-            <!-- Primary Center Stage Submission Trigger Call To Action Callout -->
-            <button class="bg-[#111827] hover:bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 cursor-pointer shadow-md transition transform active:scale-98">
+            <a href="create_assignment.html" class="bg-[#111827] hover:bg-black text-white px-6 py-3 rounded-xl font-semibold text-sm flex items-center gap-2 cursor-pointer shadow-md transition transform active:scale-98">
                 <span>➕</span> Create Your First Assignment
-            </button>
+            </a>
 
         </section>
     </main>
-     <script src="api.js"></script>
-<script src="dashboard.js"></script>
-
+    <script src="api.js"></script>
+    <script src="notifications.js"></script>
+    <script src="dashboard.js"></script>
 </body>
 </html>

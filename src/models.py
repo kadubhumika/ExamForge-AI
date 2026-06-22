@@ -3,7 +3,6 @@ import uuid
 from sqlalchemy import Column, String, DateTime, ForeignKey, Index, JSON, Integer, Boolean, event
 from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
 from datetime import datetime, timezone
 from src.database import Base
 
@@ -32,13 +31,14 @@ class User(Base):
     school = relationship("School", back_populates="users")
     settings = relationship("UserSetting", back_populates="user", uselist=False)
     assignments = relationship("Assignment", back_populates="teacher")
+    notifications = relationship("Notification", back_populates="user")
 
 
 class UserSetting(Base):
     __tablename__ = "user_settings"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True, nullable=False)
-    theme = Column(String, default="white")  # "white" or "dark"
+    theme = Column(String, default="light")  # "light" or "dark"
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc),
                         onupdate=lambda: datetime.now(timezone.utc))
 
@@ -59,15 +59,12 @@ class Class(Base):
 # --- 2. PAPER TEMPLATES & ASSIGNMENT MODELS ---
 
 
-
-
 class PaperTemplate(Base):
     __tablename__ = "paper_templates"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id"), nullable=False)
     class_id = Column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=False)
     topic_name = Column(String, nullable=False)
-
 
     structure_scheme = Column(JSON, nullable=False)
 
@@ -81,7 +78,6 @@ class PaperTemplate(Base):
 @event.listens_for(PaperTemplate, 'before_insert')
 @event.listens_for(PaperTemplate, 'before_update')
 def calculate_template_totals(mapper, connection, target):
-
     if target.structure_scheme and isinstance(target.structure_scheme, list):
         try:
             total_q = sum(int(item.get('count', 0)) for item in target.structure_scheme)
@@ -90,7 +86,6 @@ def calculate_template_totals(mapper, connection, target):
             target.total_questions = total_q
             target.total_marks = total_m
         except (ValueError, TypeError):
-
             target.total_questions = 0
             target.total_marks = 0
 
@@ -99,14 +94,15 @@ class Assignment(Base):
     __tablename__ = "assignments"
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     teacher_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    class_id = Column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=False)
+    class_id = Column(UUID(as_uuid=True), ForeignKey("classes.id"), nullable=True)
     template_id = Column(UUID(as_uuid=True), ForeignKey("paper_templates.id"), nullable=True)
 
     title = Column(String, nullable=False, index=True)
-    file_url = Column(String, nullable=False)  # Can be S3 URL for PDF or Image
+    file_url = Column(String, nullable=False)  # Source uploaded PDF/image
     instructions = Column(String, nullable=True)
-    status = Column(String, default="PENDING")  # PENDING, PROCESSING, DONE, FAILED
-    job_id = Column(String, nullable=True)  # Celery tracking ID
+    status = Column(String, default="PENDING")  # PENDING, PROCESSING, DONE, FAILED, DELETED
+    job_id = Column(String, nullable=True)
+    error_message = Column(String, nullable=True)
 
     assigned_on = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     due_date = Column(DateTime, nullable=False)
@@ -118,7 +114,6 @@ class Assignment(Base):
     assigned_class = relationship("Class", back_populates="assignments")
     results = relationship("AssignmentResult", back_populates="assignment", uselist=False)
 
-    # Composite Performance Indexes optimized for fast dashboard searching
     __table_args__ = (
         Index("idx_school_search", "class_id", "created_at"),
         Index("idx_teacher_dashboard", "teacher_id", "due_date"),
@@ -131,7 +126,7 @@ class AssignmentResult(Base):
     assignment_id = Column(UUID(as_uuid=True), ForeignKey("assignments.id"), unique=True, nullable=False)
     structured_json = Column(JSON, nullable=False)
     pdf_url = Column(String, nullable=False)  # Generated final test sheet path
-    ai_model_used = Column(String, default="gpt-4o")
+    ai_model_used = Column(String, default="gemini-2.0-flash")
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     assignment = relationship("Assignment", back_populates="results")
@@ -144,8 +139,30 @@ class MyLibrary(Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     assignment_id = Column(UUID(as_uuid=True), ForeignKey("assignments.id"), nullable=False)
-    is_completed = Column(Boolean, default=False)  # Updates true automatically when due_date passes
+    is_completed = Column(Boolean, default=False)
 
     __table_args__ = (
         Index("idx_library_lookup", "user_id", "is_completed"),
+    )
+
+
+# --- 4. NOTIFICATIONS ---
+
+class Notification(Base):
+    __tablename__ = "notifications"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    type = Column(String, nullable=False)  # ASSIGNMENT_CREATED, ASSIGNMENT_DELETED, ASSIGNMENT_READY, ASSIGNMENT_FAILED, PROFILE_UPDATED, THEME_CHANGED
+    title = Column(String, nullable=False)
+    message = Column(String, nullable=True)
+    related_id = Column(UUID(as_uuid=True), nullable=True)  # e.g. assignment_id
+    is_read = Column(Boolean, default=False)
+
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    user = relationship("User", back_populates="notifications")
+
+    __table_args__ = (
+        Index("idx_notif_user_unread", "user_id", "is_read", "created_at"),
     )

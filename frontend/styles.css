@@ -1,0 +1,44 @@
+/* Dark mode overrides — applied when <body class="dark"> is set by settings.js */
+body.dark {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460) !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark aside {
+    background: #1e1e2e !important;
+    border-color: #2d2d3d !important;
+}
+
+body.dark main {
+    background: rgba(30, 30, 46, 0.6) !important;
+}
+
+body.dark header,
+body.dark .bg-white {
+    background: #1e1e2e !important;
+    border-color: #2d2d3d !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark h1, body.dark h2, body.dark h3, body.dark h4,
+body.dark .text-\[\#1A1A1A\], body.dark .text-\[\#111827\] {
+    color: #e2e8f0 !important;
+}
+
+body.dark input, body.dark textarea, body.dark select {
+    background: #2d2d3d !important;
+    border-color: #3d3d5d !important;
+    color: #e2e8f0 !important;
+}
+
+body.dark .bg-\[\#F3F4F6\], body.dark .bg-\[\#F9FAFB\], body.dark .bg-\[\#FAFAFA\] {
+    background: #2d2d3d !important;
+}
+
+body.dark .text-\[\#4B5563\], body.dark .text-\[\#6B7280\], body.dark .text-\[\#828282\] {
+    color: #94a3b8 !important;
+}
+
+body.dark .border-\[\#E5E7EB\], body.dark .border-\[\#F3F4F6\] {
+    border-color: #2d2d3d !important;
+}

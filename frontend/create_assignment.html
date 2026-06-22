@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamForge AI - Create Assignment</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 20px; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-[#FFFBF7] via-[#FFF8F2] to-[#FFF3EA] h-screen max-h-screen overflow-hidden flex p-4 gap-4 box-border relative">
+
+    <aside class="w-[280px] max-h-full bg-white rounded-3xl border border-[#E5E7EB] p-4 flex flex-col gap-5 shrink-0 shadow-xs overflow-y-auto custom-scroll">
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2.5 px-1 py-1">
+                <div class="bg-[#1A1A1A] text-white rounded-lg w-8 h-8 flex items-center justify-center font-black text-xl">V</div>
+                <span class="font-bold text-xl text-[#1A1A1A] tracking-tight">ExamForge AI</span>
+            </div>
+            <div class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 shadow-xs">
+                ✨ AI Teacher's Toolkit
+            </div>
+            <nav class="flex flex-col gap-0.5">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>🏠</span> Home
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>👥</span> My Groups
+                </a>
+                <a href="assignment.html" class="flex items-center justify-between px-4 py-2 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                    <div class="flex items-center gap-3"><span>📄</span> Assignments</div>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📱</span> AI Teacher's Toolkit
+                </a>
+                <a href="mylibrary.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📚</span> My Library
+                </a>
+            </nav>
+        </div>
+        <div class="flex flex-col gap-2 border-t border-gray-100 pt-3">
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-1.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                <span>⚙️</span> Settings
+            </a>
+            <div class="bg-[#F3F4F6] p-2.5 rounded-2xl flex items-center gap-3">
+                <div class="bg-white w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-xl shadow-xs shrink-0">🏫</div>
+                <div class="overflow-hidden">
+                    <h4 id="schoolName" class="text-[13px] font-bold text-[#1A1A1A] truncate"></h4>
+                    <p class="margin-0 text-[11px] text-[#828282] truncate">Bokaro Steel City</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl p-5 flex flex-col gap-4 overflow-y-auto custom-scroll pb-6 relative">
+
+        <header class="bg-white rounded-2xl px-6 py-2.5 flex justify-between items-center shadow-xs border border-[#F3F4F6] gap-4 shrink-0">
+            <div class="flex items-center gap-4 flex-1 max-w-md">
+                <span onclick="window.location.href='assignment.html'" class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
+                <div class="flex items-center gap-2 text-sm text-[#555555] font-medium select-none">
+                    <span>🎛️</span><span>Assignment</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-5 shrink-0">
+                <div class="relative cursor-pointer text-lg text-gray-600 hover:text-black transition">
+                    🔔 <span class="absolute top-0.5 right-0.5 h-2 w-2 bg-[#FF5A36] rounded-full border border-white"></span>
+                </div>
+                <div class="flex items-center gap-2 cursor-pointer group">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="" class="w-7 h-7 rounded-full object-cover border border-[#E5E7EB]"/>
+                    <span id="username" class="text-sm font-semibold text-[#1A1A1A]"></span>
+                </div>
+            </div>
+        </header>
+
+        <div class="flex items-start gap-3 px-2 mt-1 shrink-0 justify-between flex-wrap">
+            <div>
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-[#4ADE80] rounded-full ring-4 ring-green-100 animate-pulse"></span>
+                    <h2 class="text-xl font-bold text-[#1A1A1A] tracking-tight">Create Assignment</h2>
+                </div>
+                <p class="text-xs text-[#828282] ml-4 mt-0.5">Set up a new assignment for your students</p>
+            </div>
+        </div>
+
+        <div class="w-full bg-gray-200/80 rounded-full h-1.5 px-1 mt-1 mb-2 shrink-0">
+            <div class="bg-[#4B5563] h-1.5 rounded-full w-1/2"></div>
+        </div>
+
+        <div id="errorBanner" class="hidden bg-red-50 text-red-600 text-xs font-semibold px-4 py-2.5 rounded-xl max-w-4xl mx-auto w-full"></div>
+
+        <div class="bg-white border border-[#F3F4F6] p-6 md:p-8 rounded-3xl shadow-xs flex flex-col gap-6 max-w-4xl mx-auto w-full">
+
+            <div>
+                <h3 class="text-lg font-bold text-[#1A1A1A] tracking-tight">Assignment Details</h3>
+                <p class="text-xs text-[#828282] mt-0.5">Basic information about your assignment</p>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-[#1A1A1A]">Assignment Title / Topic</label>
+                <input id="assignmentTitle" type="text" placeholder="e.g. Quiz on Electricity" class="w-full bg-white border border-[#E5E7EB] text-sm text-[#1A1A1A] px-4 py-2.5 rounded-xl focus:outline-none focus:border-black transition placeholder-gray-400" />
+            </div>
+
+            <input id="fileInput" type="file" accept=".pdf,.png,.jpg,.jpeg" class="hidden" />
+            <div id="dropZone" onclick="document.getElementById('fileInput').click()" class="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl p-8 bg-[#FAFAFA] text-center cursor-pointer hover:bg-gray-50/80 transition relative group">
+                <div class="bg-white border border-gray-100 w-10 h-10 rounded-xl flex items-center justify-center shadow-xs text-gray-500 group-hover:scale-105 transition mb-3">☁️</div>
+                <p id="dropZoneText" class="text-sm font-bold text-[#1A1A1A]">Choose a file or drag & drop it here</p>
+                <p class="text-xs text-[#828282] mt-1">PDF, JPEG, PNG — up to 10MB</p>
+                <button type="button" class="mt-4 bg-white border border-[#E5E7EB] hover:border-[#9CA3AF] text-[#1A1A1A] text-xs font-semibold px-4 py-1.5 rounded-full shadow-xs transition">
+                    Browse Files
+                </button>
+            </div>
+            <p class="text-[11px] text-[#828282] text-center -mt-3">Upload the chapter/source PDF or image to generate questions from</p>
+
+            <div class="flex flex-col gap-1.5">
+                <label class="text-xs font-bold text-[#1A1A1A]">Due Date</label>
+                <input id="dueDate" type="date" class="w-full bg-white border border-[#E5E7EB] text-xs text-[#1A1A1A] px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#1A1A1A] transition" />
+            </div>
+
+            <div class="flex flex-col gap-3 mt-2">
+                <div class="grid grid-cols-12 gap-3 px-2 text-xs font-bold text-[#1A1A1A]">
+                    <div class="col-span-6 md:col-span-7">Question Type</div>
+                    <div class="col-span-3 md:col-span-2 text-center">No. of Questions</div>
+                    <div class="col-span-3 md:col-span-2 text-center">Marks Each</div>
+                </div>
+
+                <div id="questionRows" class="flex flex-col gap-3"></div>
+
+                <div class="mt-2">
+                    <button type="button" onclick="addQuestionRow()" class="inline-flex items-center gap-2 bg-[#1A1A1A] hover:bg-black text-white px-4 py-2 rounded-full font-semibold text-xs transition shadow-xs cursor-pointer">
+                        <span class="text-xs">➕</span> Add Question Type
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-end gap-1 text-right mt-2 border-t border-gray-50 pt-4">
+                <p class="text-xs text-[#4B5563]">Total Questions : <strong id="totalQuestions" class="font-bold text-[#1A1A1A]">0</strong></p>
+                <p class="text-xs text-[#4B5563]">Total Marks : <strong id="totalMarks" class="font-bold text-[#1A1A1A]">0</strong></p>
+            </div>
+
+            <div class="flex flex-col gap-1.5 mt-2">
+                <label class="text-xs font-bold text-[#1A1A1A]">Additional Information (For better output)</label>
+                <textarea id="additionalInstructions" rows="3" placeholder="e.g. Generate a question paper for a 45 minute exam, focus on practical applications..." class="w-full bg-[#FAFAFA] border border-[#E5E7EB] text-xs text-[#1A1A1A] p-4 rounded-2xl focus:outline-none focus:border-black transition placeholder-gray-400 resize-none custom-scroll"></textarea>
+            </div>
+
+        </div>
+
+        <div class="max-w-4xl mx-auto w-full flex items-center justify-between mt-4 px-2 shrink-0">
+            <button onclick="window.location.href='assignment.html'" class="bg-white border border-[#E5E7EB] hover:border-[#9CA3AF] text-[#1A1A1A] font-semibold text-xs px-5 py-2 rounded-full shadow-xs transition flex items-center gap-1.5 cursor-pointer">
+                <span>←</span> Cancel
+            </button>
+            <button id="nextBtn" onclick="submitAssignment()" class="bg-[#1A1A1A] hover:bg-black text-white font-semibold text-xs px-6 py-2 rounded-full shadow-md transition flex items-center gap-1.5 cursor-pointer">
+                <span id="nextBtnText">Generate Assignment</span> <span>→</span>
+            </button>
+        </div>
+
+    </main>
+    <script src="api.js"></script>
+    <script src="notifications.js"></script>
+    <script src="create_assignment.js"></script>
+</body>
+</html>

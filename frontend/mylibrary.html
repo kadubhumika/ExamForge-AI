@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExamForge AI - My Library</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 20px; }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-[#FFFBF7] via-[#FFF8F2] to-[#FFF3EA] h-screen max-h-screen overflow-hidden flex p-4 gap-4 box-border relative">
+
+    <aside class="w-[280px] max-h-full bg-white rounded-3xl border border-[#E5E7EB] p-4 flex flex-col gap-5 shrink-0 shadow-xs overflow-y-auto custom-scroll">
+        <div class="flex flex-col gap-4">
+            <div class="flex items-center gap-2.5 px-1 py-1">
+                <div class="bg-[#1A1A1A] text-white rounded-lg w-8 h-8 flex items-center justify-center font-black text-xl">V</div>
+                <span class="font-bold text-xl text-[#1A1A1A] tracking-tight">ExamForge AI</span>
+            </div>
+
+            <a href="create_assignment.html" class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 cursor-pointer transition hover:opacity-95 shadow-xs">
+                ✨ AI Teacher's Toolkit
+            </a>
+
+            <nav class="flex flex-col gap-0.5">
+                <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>🏠</span> Home
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>👥</span> My Groups
+                </a>
+                <a href="assignment.html" class="flex items-center justify-between px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <div class="flex items-center gap-3">
+                        <span>📄</span> Assignments
+                    </div>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📱</span> AI Teacher's Toolkit
+                </a>
+                <a href="mylibrary.html" class="flex items-center gap-3 px-4 py-2 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                    <span>📚</span> My Library
+                </a>
+            </nav>
+        </div>
+
+        <div class="flex flex-col gap-2 border-t border-gray-100 pt-3">
+            <a href="settings.html" class="flex items-center gap-3 px-4 py-1.5 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                <span>⚙️</span> Settings
+            </a>
+            <div class="bg-[#F3F4F6] p-2.5 rounded-2xl flex items-center gap-3">
+                <div class="bg-white w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-xl shadow-xs shrink-0">🏫</div>
+                <div class="overflow-hidden">
+                    <h4 id="schoolName" class="text-[13px] font-bold text-[#1A1A1A] truncate"></h4>
+                    <p class="margin-0 text-[11px] text-[#828282] truncate">Bokaro Steel City</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 bg-white/40 backdrop-blur-md rounded-3xl p-5 flex flex-col gap-4 overflow-y-auto custom-scroll pb-24 relative">
+
+        <header class="bg-white rounded-2xl px-6 py-2.5 flex justify-between items-center shadow-xs border border-[#F3F4F6] gap-4 shrink-0">
+            <div class="flex items-center gap-4 flex-1 max-w-md">
+                <span onclick="window.location.href='dashboard.html'" class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
+                <div class="flex items-center gap-2 text-sm text-[#555555] font-medium select-none">
+                    <span>🎛️</span>
+                    <span>My Library</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-5 shrink-0">
+                <div class="relative cursor-pointer text-lg text-gray-600 hover:text-black transition">
+                    🔔 <span class="absolute top-0.5 right-0.5 h-2 w-2 bg-[#FF5A36] rounded-full border border-white"></span>
+                </div>
+                <div class="flex items-center gap-2 cursor-pointer group">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100" alt="John Doe" class="w-7 h-7 rounded-full object-cover border border-[#E5E7EB]"/>
+                    <span id="username" class="text-sm font-semibold text-[#1A1A1A] group-hover:text-gray-700"></span>
+                </div>
+            </div>
+        </header>
+
+        <section class="grid grid-cols-3 gap-4 shrink-0">
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Total Items</p>
+                    <h3 id="statTotal" class="text-2xl font-black text-[#1A1A1A] mt-1">0</h3>
+                </div>
+                <div class="text-2xl bg-[#F3F4F6] w-10 h-10 rounded-xl flex items-center justify-center">📚</div>
+            </div>
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-green-600">Completed</p>
+                    <h3 id="statCompleted" class="text-2xl font-black text-green-700 mt-1">0</h3>
+                </div>
+                <div class="text-2xl bg-green-50 w-10 h-10 rounded-xl flex items-center justify-center">✅</div>
+            </div>
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-amber-600">Pending</p>
+                    <h3 id="statPending" class="text-2xl font-black text-amber-700 mt-1">0</h3>
+                </div>
+                <div class="text-2xl bg-amber-50 w-10 h-10 rounded-xl flex items-center justify-center">⏳</div>
+            </div>
+        </section>
+
+        <div class="bg-white rounded-2xl p-2.5 flex flex-col md:flex-row justify-between items-stretch md:items-center shadow-xs border border-[#F3F4F6] gap-3 shrink-0">
+            <div class="relative flex-1 max-w-md flex items-center">
+                <span class="absolute left-3.5 text-gray-400 text-xs pointer-events-none">🔍</span>
+                <input id="librarySearch" type="text" placeholder="Search assignments..." class="w-full bg-[#F3F4F6] text-xs text-[#1A1A1A] pl-9 pr-4 py-2.5 rounded-xl border border-transparent focus:outline-none focus:bg-white focus:border-[#E5E7EB] transition placeholder-gray-400" />
+            </div>
+
+            <div class="flex items-center gap-2">
+                <div class="relative flex items-center">
+                    <span class="absolute left-3 text-xs pointer-events-none text-gray-500">📁</span>
+                    <select id="filterStatus" class="appearance-none bg-white border border-[#E5E7EB] hover:border-[#9CA3AF] text-xs font-semibold text-[#4B5563] pl-8 pr-8 py-2 rounded-xl cursor-pointer transition focus:outline-none min-w-[110px]">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="pending">Pending</option>
+                    </select>
+                    <span class="absolute right-3 text-[9px] text-[#828282] pointer-events-none">▼</span>
+                </div>
+
+                <div class="relative flex items-center">
+                    <span class="absolute left-3 text-xs pointer-events-none text-gray-500">↕️</span>
+                    <select id="sortOrder" class="appearance-none bg-white border border-[#E5E7EB] hover:border-[#9CA3AF] text-xs font-semibold text-[#4B5563] pl-8 pr-8 py-2 rounded-xl cursor-pointer transition focus:outline-none min-w-[120px]">
+                        <option value="newest">Newest</option>
+                        <option value="oldest">Oldest</option>
+                        <option value="due">Due Date</option>
+                    </select>
+                    <span class="absolute right-3 text-[9px] text-[#828282] pointer-events-none">▼</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="libraryGrid" class="grid grid-cols-1 xl:grid-cols-2 gap-4"></div>
+
+    </main>
+
+    <div class="absolute bottom-0 left-[296px] right-4 h-24 bg-gradient-to-t from-[#FFF3EA] via-[#FFF3EA]/90 to-transparent flex items-center justify-center pointer-events-none z-40">
+        <a href="create_assignment.html" class="bg-[#111111] hover:bg-black text-white px-6 py-3 rounded-full font-semibold text-sm flex items-center gap-2 cursor-pointer shadow-lg transition transform active:scale-95 pointer-events-auto">
+            <span>➕</span> Create Assignment
+        </a>
+    </div>
+    <script src="api.js"></script>
+    <script src="notifications.js"></script>
+    <script src="mylibrary.js"></script>
+</body>
+</html>

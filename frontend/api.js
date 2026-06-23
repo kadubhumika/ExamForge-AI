@@ -1,4 +1,4 @@
-const API = "http://127.0.0.1:8085/api/v1";
+const API = "https://examforge-ai-my1w.onrender.com/api/v1";
 
 function getToken() {
     return localStorage.getItem("token");

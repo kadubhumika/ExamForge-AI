@@ -26,4 +26,4 @@ COPY . /app/
 EXPOSE 8085
 
 # 8. Production execution entrypoint script command
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8085"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "1000"]

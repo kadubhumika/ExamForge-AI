@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="styles.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ExamForge AI - Assignment Output</title>
+    <title>ExamForge AI - Evaluation Results</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        body {
-            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-        }
+        body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
         .custom-scroll::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scroll::-webkit-scrollbar-track { background: transparent; }
         .custom-scroll::-webkit-scrollbar-thumb { background-color: #E5E7EB; border-radius: 20px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .spinner { animation: spin 1s linear infinite; }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gradient-to-br from-[#FFFBF7] via-[#FFF8F2] to-[#FFF3EA] h-screen max-h-screen overflow-hidden flex p-4 gap-4 box-border relative">
 
@@ -25,9 +21,9 @@
                 <div class="bg-[#1A1A1A] text-white rounded-lg w-8 h-8 flex items-center justify-center font-black text-xl">V</div>
                 <span class="font-bold text-xl text-[#1A1A1A] tracking-tight">ExamForge AI</span>
             </div>
-            <div class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 shadow-xs">
+            <a href="create_assignment.html" class="w-full bg-gradient-to-r from-[#D05230] to-[#E76F51] text-white py-2 px-4 rounded-full font-medium text-sm flex items-center justify-center gap-2 cursor-pointer transition hover:opacity-95 shadow-xs">
                 ✨ AI Teacher's Toolkit
-            </div>
+            </a>
             <nav class="flex flex-col gap-0.5">
                 <a href="dashboard.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>🏠</span> Home
@@ -35,17 +31,14 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>👥</span> My Groups
                 </a>
-                <a href="assignment.html" class="flex items-center justify-between px-4 py-2 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                <a href="assignment.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <div class="flex items-center gap-3"><span>📄</span> Assignments</div>
                 </a>
-                <a href="evaluate.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
-    <span>📝</span> Evaluate Students
-</a>
-<a href="analytics.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
-    <span>📊</span> Analytics
-</a>
-                <a href="#" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
-                    <span>📱</span> AI Teacher's Toolkit
+                <a href="evaluate.html" class="flex items-center gap-3 px-4 py-2 text-[#1A1A1A] font-semibold text-sm bg-[#F3F4F6] rounded-xl transition">
+                    <span>📝</span> Evaluate Students
+                </a>
+                <a href="analytics.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
+                    <span>📊</span> Analytics
                 </a>
                 <a href="mylibrary.html" class="flex items-center gap-3 px-4 py-2 text-[#4B5563] hover:text-[#1A1A1A] font-medium text-sm rounded-xl transition hover:bg-[#F9FAFB]">
                     <span>📚</span> My Library
@@ -60,7 +53,7 @@
                 <div class="bg-white w-9 h-9 rounded-xl border border-[#E5E7EB] flex items-center justify-center text-xl shadow-xs shrink-0">🏫</div>
                 <div class="overflow-hidden">
                     <h4 id="schoolName" class="text-[13px] font-bold text-[#1A1A1A] truncate"></h4>
-                    <p class="margin-0 text-[11px] text-[#828282] truncate">Bokaro Steel City</p>
+                    <p class="text-[11px] text-[#828282] truncate">Bokaro Steel City</p>
                 </div>
             </div>
         </div>
@@ -70,9 +63,9 @@
 
         <header class="bg-white rounded-2xl px-6 py-2.5 flex justify-between items-center shadow-xs border border-[#F3F4F6] gap-4 shrink-0">
             <div class="flex items-center gap-4 flex-1 max-w-md">
-                <span onclick="window.location.href='assignment.html'" class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
+                <span onclick="window.location.href='evaluate.html'" class="text-lg text-[#555555] cursor-pointer hover:text-black transition shrink-0">←</span>
                 <div class="flex items-center gap-2 text-sm text-[#555555] font-medium select-none">
-                    <span>✨</span><span class="text-xs text-gray-400">Generated Paper</span>
+                    <span>📊</span><span>Evaluation Results</span>
                 </div>
             </div>
             <div class="flex items-center gap-5 shrink-0">
@@ -86,31 +79,56 @@
             </div>
         </header>
 
-        <div id="loadingState" class="flex-1 flex flex-col items-center justify-center gap-4">
-            <div class="w-12 h-12 border-4 border-gray-200 border-t-[#E76F51] rounded-full spinner"></div>
-            <p id="loadingText" class="text-sm font-semibold text-[#4B5563]">Generating your question paper…</p>
-            <p class="text-xs text-gray-400">This usually takes 15–30 seconds.</p>
-        </div>
-
-        <div id="errorState" class="hidden flex-1 flex flex-col items-center justify-center gap-3 text-center">
-            <div class="text-4xl">⚠️</div>
-            <p class="text-sm font-bold text-red-500">Generation failed</p>
-            <p id="errorMessage" class="text-xs text-gray-400 max-w-md"></p>
-            <a href="create_assignment.html" class="mt-2 bg-[#111111] hover:bg-black text-white px-5 py-2.5 rounded-xl font-semibold text-xs transition">Try Again</a>
-        </div>
-
-        <div id="resultState" class="hidden bg-[#2D2D2D] rounded-3xl p-5 flex flex-col gap-5 w-full max-w-4xl mx-auto shadow-sm overflow-y-auto custom-scroll flex-1">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-3 pt-1">
-                <p id="resultIntro" class="text-sm md:text-base font-semibold text-white tracking-tight leading-relaxed max-w-2xl"></p>
-                <button onclick="downloadPdf()" class="bg-white hover:bg-gray-100 text-[#1A1A1A] text-xs font-bold px-4 py-2 rounded-xl transition flex items-center gap-2 shadow-xs shrink-0 cursor-pointer">
-                    📥 Download as PDF
-                </button>
+        <div class="flex items-center justify-between px-2 mt-1 shrink-0">
+            <div>
+                <h2 id="resultsTitle" class="text-xl font-bold text-[#1A1A1A] tracking-tight">Results</h2>
+                <p class="text-xs text-[#828282]">AI-graded student answer sheets</p>
             </div>
-            <div id="paperSheet" class="bg-white rounded-2xl p-6 md:p-10 text-[#1A1A1A] shadow-lg flex flex-col gap-6 selection:bg-orange-100"></div>
+            <button onclick="downloadResultsPdf()" class="bg-[#1A1A1A] hover:bg-black text-white text-xs font-bold px-5 py-2.5 rounded-xl transition flex items-center gap-2 cursor-pointer shadow-md">
+                📥 Download Results PDF
+            </button>
         </div>
+
+        <div class="grid grid-cols-3 gap-4 shrink-0">
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-[#6B7280]">Total Students</p>
+                    <h3 id="statTotal" class="text-2xl font-black text-[#1A1A1A] mt-1">0</h3>
+                </div>
+                <div class="text-2xl bg-[#F3F4F6] w-10 h-10 rounded-xl flex items-center justify-center">👥</div>
+            </div>
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-green-600">Class Average</p>
+                    <h3 id="statAvg" class="text-2xl font-black text-green-700 mt-1">0%</h3>
+                </div>
+                <div class="text-2xl bg-green-50 w-10 h-10 rounded-xl flex items-center justify-center">📈</div>
+            </div>
+            <div class="bg-white border border-[#F3F4F6] p-4 rounded-2xl shadow-xs flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-blue-600">Top Score</p>
+                    <h3 id="statTop" class="text-2xl font-black text-blue-700 mt-1">0%</h3>
+                </div>
+                <div class="text-2xl bg-blue-50 w-10 h-10 rounded-xl flex items-center justify-center">🏆</div>
+            </div>
+        </div>
+
+        <div id="loadingState" class="flex-1 flex items-center justify-center">
+            <p class="text-sm text-gray-400">Loading results...</p>
+        </div>
+
+        <div id="resultsTable" class="hidden bg-white border border-[#F3F4F6] rounded-3xl shadow-xs overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead id="tableHead" class="bg-[#1A1A1A] text-white"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
     </main>
     <script src="api.js"></script>
     <script src="notifications.js"></script>
-    <script src="output.js"></script>
+    <script src="results.js"></script>
 </body>
 </html>

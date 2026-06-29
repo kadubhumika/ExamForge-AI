@@ -166,3 +166,41 @@ class Notification(Base):
     __table_args__ = (
         Index("idx_notif_user_unread", "user_id", "is_read", "created_at"),
     )
+
+# --- 5. STUDENT EVALUATION MODELS ---
+
+class StudentSubmission(Base):
+    __tablename__ = "student_submissions"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    assignment_id = Column(UUID(as_uuid=True), ForeignKey("assignments.id"), nullable=False)
+    teacher_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    student_name = Column(String, nullable=False)
+    pdf_url = Column(String, nullable=False)
+    status = Column(String, default="PENDING")
+    error_message = Column(String, nullable=True)
+
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    assignment = relationship("Assignment")
+    result = relationship("EvaluationResult", back_populates="submission", uselist=False)
+
+    __table_args__ = (
+        Index("idx_submission_assignment", "assignment_id", "status"),
+    )
+
+
+class EvaluationResult(Base):
+    __tablename__ = "evaluation_results"
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    submission_id = Column(UUID(as_uuid=True), ForeignKey("student_submissions.id"), unique=True, nullable=False)
+
+    student_name = Column(String, nullable=False)
+    scores_json = Column(JSON, nullable=False)
+    total_marks = Column(Integer, nullable=False, default=0)
+    max_marks = Column(Integer, nullable=False, default=0)
+    percentage = Column(Integer, nullable=False, default=0)
+
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+    submission = relationship("StudentSubmission", back_populates="result")

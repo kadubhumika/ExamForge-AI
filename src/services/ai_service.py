@@ -1,5 +1,8 @@
 import json
+import warnings
 from typing import List, Dict, Any
+
+warnings.filterwarnings("ignore", category=FutureWarning, module="google.generativeai")
 
 import google.generativeai as genai
 from fastapi import HTTPException, status

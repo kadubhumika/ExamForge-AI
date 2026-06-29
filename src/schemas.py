@@ -128,6 +128,62 @@ class AssignmentResultResponse(BaseModel):
 # ---------------------------
 # NOTIFICATIONS
 # ---------------------------
+# ---------------------------
+# EVALUATION SCHEMAS
+# ---------------------------
+
+class EvaluationSubmitResponse(BaseModel):
+    submission_id: UUID
+    student_name: str
+    status: str
+
+    class Config:
+        from_attributes = True
+
+
+class EvaluationResultResponse(BaseModel):
+    id: UUID
+    submission_id: UUID
+    student_name: str
+    scores_json: Dict[str, Any]
+    total_marks: int
+    max_marks: int
+    percentage: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class AssignmentEvaluationSummary(BaseModel):
+    assignment_id: UUID
+    assignment_title: str
+    total_students: int
+    completed: int
+    pending: int
+    failed: int
+    class_average: float
+    results: List[EvaluationResultResponse]
+
+
+# ---------------------------
+# ANALYTICS SCHEMAS
+# ---------------------------
+
+class TeacherAnalytics(BaseModel):
+    teacher_id: UUID
+    teacher_name: str
+    total_assignments: int
+    total_students_evaluated: int
+    average_marks_percentage: float
+
+
+class SchoolAnalyticsResponse(BaseModel):
+    school_name: str
+    total_teachers: int
+    total_assignments: int
+    total_evaluations: int
+    teachers: List[TeacherAnalytics]
 
 class NotificationResponse(BaseModel):
     id: UUID

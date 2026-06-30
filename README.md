@@ -1,91 +1,63 @@
 # ExamForge AI 🎓
 
-> AI-powered question paper generator for teachers. Upload a chapter PDF, set your question structure, get a print-ready exam with answer key in seconds.
+> AI-powered question paper generator and grading assistant for teachers. Upload a chapter PDF → get a question paper with answer key. Upload student answer sheets → get AI-graded results instantly.
 
-![Python](https://img.shields.io/badge/Python-3.11-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green) ![Gemini](https://img.shields.io/badge/Gemini-1.5%20Flash-orange) ![License](https://img.shields.io/badge/license-MIT-purple)
+![Python](https://img.shields.io/badge/Python-3.11-blue) ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-green) ![Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-orange)
 
 ## Features
 
-- 🤖 **AI Generation** — Gemini generates structured question papers from any chapter PDF
-- 📄 **PDF Output** — formatted question paper + answer key, ready to print
-- 🔔 **Notifications** — real-time updates for assignment created, ready, deleted
-- 🔐 **Auth** — email/password + Google OAuth with JWT sessions
-- 📚 **My Library** — track all assignments with live status
-- 🎨 **Dark Mode** — saved across all pages
-- ⚡ **Background Jobs** — upload returns instantly, AI runs in background
+- 🤖 **AI Question Generation** — upload a chapter PDF, get a complete question paper + answer key
+- 📝 **AI Answer Sheet Grading** — upload scanned/handwritten student PDFs, AI grades each question
+- 📊 **Analytics Dashboard** — school-wide teacher performance, leaderboard, trends
+- 🔐 **Auth** — email/password + Google OAuth
+- 📚 **My Library** — track assignments and results
+- 🎨 **Dark Mode** + 🔔 **Notifications**
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Backend | FastAPI, SQLAlchemy, Alembic |
-| AI | Google Gemini 1.5 Flash |
-| Database | PostgreSQL (Neon) |
-| Cache | Redis |
-| PDF | ReportLab + pypdf |
-| Auth | JWT + Google OAuth 2.0 |
-| Frontend | HTML/CSS/JS + Tailwind CSS |
-| Deploy | Render + Neon |
+FastAPI · SQLAlchemy · Alembic · Google Gemini 2.5 Flash · PostgreSQL (Neon) · Redis · ReportLab · pdf2image + Poppler · JWT + Google OAuth · HTML/JS + Tailwind + Chart.js · Render (Docker)
 
 ## Quick Start
 
 ```bash
-# 1. Clone & install
-git clone https://github.com/YOUR_USERNAME/examforge-ai.git
-cd examforge-ai
+git clone https://github.com/kadubhumika/ExamForge-AI.git
+cd ExamForge-AI
 pip install -r requirements.txt
 
-# 2. Copy env and fill in values
 cp .env.example .env
-
-# 3. Start Postgres + Redis
 docker-compose up -d
-
-# 4. Run migrations
 alembic upgrade head
 
-# 5. Start backend
 uvicorn main:app --reload --port 8085
-
-# 6. Serve frontend
+# new terminal
 cd frontend && python -m http.server 5500
 ```
 
 Open `http://127.0.0.1:5500/login.html`
 
+> Requires Poppler installed for student PDF grading (`apt-get install poppler-utils` / `brew install poppler` / [Windows build](https://github.com/oschwartz10612/poppler-windows/releases))
+
 ## How it works
-Upload PDF + set question structure
-
-↓
-
-Assignment created (PENDING)
-
-↓
-
-Background: extract text → Gemini → render PDF
-
-↓
-
-Frontend polls status every 2s
-
-↓
-
-DONE → view paper in browser + download PDF
+## How it works
+Generate:  Upload PDF → Gemini → Question Paper + Answer Key → Download
+Evaluate:  Upload student answer sheets → Gemini Vision grades vs key → Results PDF
+Analytics: School-wide teacher performance + class average trends
 
 ## Deployment
 
 | Service | Platform |
 |---|---|
-| Database | [Neon](https://neon.tech) free PostgreSQL |
-| Backend | Render Web Service — `uvicorn main:app --host 0.0.0.0 --port $PORT` |
-| Redis | Render Redis free instance |
-| Frontend | Render Static Site — publish dir: `frontend` |
+| Database | [Neon](https://neon.tech) |
+| Backend | Render (Docker) |
+| Redis | Render Redis |
+| Frontend | Render Static Site |
 
-> ⚠️ Free Render services sleep after 15 min idle. First request takes ~30s to wake.
+> Free Render tier sleeps after 15 min idle — first request takes ~30s.
 
-## API Docs
+## Live Demo
 
-Run backend and visit `http://localhost:8085/docs`
+🔗 https://examforge-ai-1.onrender.com
+💻 https://github.com/kadubhumika/ExamForge-AI
 
 ---
 
